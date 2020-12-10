@@ -98,6 +98,12 @@ platoncli init -h [lat/lax/atp/atx]
 
 ## 节点模块
 
+注意：
+
+**在windows系统下执行二进制文件，需要在本地配置bls库的环境变量，路径为：`bls_win/lib`**。
+
+
+
 ### 初始化节点
 
 - 命令
