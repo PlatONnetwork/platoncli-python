@@ -1,0 +1,11 @@
+{
+  "typ": 0,
+  "benifit_address": "atp1tafunymdk222q2wma3fmncnrkksnkys9uphfmn",
+  "node_id": "7eb6e8c328939f3d34cf75171575c6942df351c715d98f1bc893ba8ec71d32ba6a741527734d4e27f13b74350f678f795cc225b1b01d850e1a5519a42f2a4de6",
+  "external_id": "MyKeyBaseId-162",
+  "node_name": "MyNodeName-162",
+  "website": "http://www.mycompany.162.com",
+  "details": "My Node Description-162",
+  "reward_per": 1,
+  "transaction_cfg": null
+}

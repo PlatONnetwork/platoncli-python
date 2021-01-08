@@ -3,6 +3,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import absolute_import
 
+import csv
 import re
 import os
 import sys
@@ -12,17 +13,118 @@ import signal
 import shutil
 import zipfile
 import tarfile
+from copy import copy
+from hexbytes import HexBytes
 import platform
 import subprocess
 from configparser import ConfigParser
+from PIL import Image
+from pyzbar import pyzbar
 from string import Template
 from logger import writeLog, setLogLevel
 import click
 import urllib.request as urlrequest
 import psutil
+import qrcode
 
 
-# 当前目录
+def HexBytes_to_str(tx):
+    for t in tx:
+        if isinstance(tx[t], HexBytes):
+            tx[t] = tx[t].hex()
+
+
+def read_json_file(file_abspath):
+    try:
+        with open(file_abspath, 'r') as load_f:
+            info = json.load(load_f)
+    except Exception as e:
+        cust_print('read {} fail!exception info is:{}'.format(file_abspath, e), fg='r')
+        sys.exit(1)
+    return info
+
+
+def get_eth_obj(config, obj_type='platon'):
+    """
+    :param obj_type: ppos、platon、pip
+    :param config: 节点配置文件
+    :return: Eth对象
+    """
+    # 节点配置文件
+    if "" == config:
+        config = os.path.join(g_dict_dir_config["conf_dir"], "node_config.json")
+    if not os.path.exists(config):
+        cust_print("The node profile exists:{}, please check it.".format(config), fg='r')
+        sys.exit(1)
+    node_conf_info = read_json_file(config)
+    hrp = node_conf_info["hrp"]
+    rpcAddress = node_conf_info["rpcAddress"]
+    chain_id = node_conf_info["chainId"]
+    if 'lat' == hrp or 'lax' == hrp:
+        from precompile_lib import Web3, HTTPProvider, Eth, Ppos, Admin, datatypes, Pip
+    else:
+        from precompile_lib import Alaya_Web3 as Web3, Alaya_HTTPProvider as HTTPProvider, Alaya_Eth as Eth, \
+            Alaya_Ppos as Ppos, Alaya_Admin as Admin, Alaya_datatypes as datatypes, Alaya_Pip as Pip
+    if obj_type == 'platon':
+        w3 = Web3(HTTPProvider(rpcAddress))
+        obj = connect_node(w3, Eth)
+    elif obj_type == 'ppos':
+        function_name = sys._getframe(1).f_code.co_name
+        w3 = Web3(HTTPProvider(rpcAddress), chain_id=chain_id)
+        obj = Ppos(w3)
+        setattr(obj, 'w3', w3)
+        if function_name == 'getPackageReward':
+            setattr(obj, 'hrp', hrp)
+        elif function_name in ['create', 'update', 'vote', 'declareVersion']:
+            admin = Admin(w3)
+            setattr(obj, 'admin', admin)
+    else:
+        w3 = Web3(HTTPProvider(rpcAddress), chain_id=chain_id)
+        obj = Pip(w3)
+    exclude_list = ['ppos', 'pip']
+    if obj_type in exclude_list:
+        setattr(obj, 'datatypes', datatypes)
+    return obj
+
+
+def write_QRCode(data, save_path):
+    """
+    QRCode主要功能是用来存待签名信息的
+    :param data: 需要保存到二维码中的数据
+    :param save_path: 二维码保存的路径
+    :return:
+    """
+    # 实例化二维码生成类
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    # 设置二维码数据
+    qr.add_data(data=data)
+    # 启用二维码颜色设置
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="green", back_color="white")
+    img.save(save_path)
+
+
+def read_QRCode(abspath):
+    """
+    二维码识别
+    :param abspath:
+    :return:
+    """
+    import ast
+    img = Image.open(abspath)
+    barcodes = pyzbar.decode(img)
+    data = []
+    for barcode in barcodes:
+        barcodeData = barcode.data.decode("utf-8")
+        data = [dict(da) for da in ast.literal_eval(barcodeData)]
+    return data
+
+
 def get_current_dir():
     return os.getcwd()
 
@@ -68,7 +170,7 @@ def ip_in_china():
 
 
 # cli版本
-CLI_VERSION = '0.1.0'
+CLI_VERSION = '0.2.0'
 CLI_NAME = 'platoncli'
 PLATON_NAME = 'platon'
 if "windows" == g_system:
@@ -94,7 +196,16 @@ g_dict_dir_config = {
     "nodekey_dir": os.path.join(os.path.join(g_current_dir, "platon"), "nodeKey"),  # nodekey目录
     "wallet_dir": os.path.join(g_current_dir, "wallet"),
     "unsigned_tx_dir": os.path.join(g_current_dir, "unsigned_transaction"),
-    "signed_tx_dir": os.path.join(g_current_dir, "signed_transaction")
+    "signed_tx_dir": os.path.join(g_current_dir, "signed_transaction"),
+    "wallet_recovery_dir": os.path.join(g_current_dir, "wallet_recovery_dir")
+}
+
+g_test_address_info = {
+    "pri_key": "0x117cbac1f5d481ebf74a642ef7825d03232db812bb6214e088426f966ffed513",
+    "lat": "lat1a9gps7ckrak7pk7uwhjxaushterge27k0w3l89",
+    "lax": "lax1a9gps7ckrak7pk7uwhjxaushterge27kqtrsf2",
+    "atp": "atp1a9gps7ckrak7pk7uwhjxaushterge27kkc88c2",
+    "atx": "atx1a9gps7ckrak7pk7uwhjxaushterge27ku7mdtq"
 }
 
 for x in ['platon', 'config', 'templates']:
@@ -1022,9 +1133,8 @@ def get_platon_version():
     return current_version
 
 
-def connect_node(rpcAddress, Web3, Eth, HTTPProvider):
+def connect_node(w3, Eth):
     try:
-        w3 = Web3(HTTPProvider(rpcAddress))
         platon = Eth(w3)
         blkNumber = platon.blockNumber
         cust_print('get block number:{}'.format(blkNumber), fg='g')
@@ -1041,6 +1151,244 @@ def connect_node(rpcAddress, Web3, Eth, HTTPProvider):
         sys.exit(1)
 
     return platon
+
+
+'''
+#############钱包模块######################
+'''
+
+
+def get_address_by_file_name(wallet_dir, file_name, net_type):
+    find, wallet_file_path = get_dir_by_name(wallet_dir, file_name)
+    if not find:
+        cust_print('The wallet file of {} could not be found on {}'.format(file_name, wallet_dir))
+        sys.exit(1)
+
+    wallet_file_path = os.path.join(wallet_file_path, file_name)
+    with open(wallet_file_path, 'r') as load_f:
+        wallet_info = json.load(load_f)
+        address = wallet_info["address"][net_type]
+
+    return address, wallet_file_path
+
+
+def get_wallet_file_by_address(dir_name, address, net_type):
+    """获取某一目录及其子目录下某一地址的冷钱包文件或者观察钱包
+
+    Args:
+        dir_name: 要搜索的目录路径
+        address： 要查找的地址
+        online：是否为观察钱包，默认为观察钱包
+
+    Returns:
+        bool： 表示是否找到文件
+        str： 查找的文件的完整路径
+    """
+    for root, _, files in os.walk(dir_name):
+        for name in files:
+            if name.endswith(".json"):
+                full_path = os.path.join(root, name)
+                with open(full_path, 'r') as load_f:
+                    wallet_info = json.load(load_f)
+                    if wallet_info["address"][net_type] == address:
+                        return True, full_path, name
+
+    return False, None, None
+
+
+def get_dir_by_name(dir_name, file_name):
+    """获取某一目录及其子目录下的某一个名称所在的路径
+
+        Args:
+            dir_name: 要搜索的目录路径
+            file_name： 要查找文件名称
+
+        Returns:
+            bool： 表示是否找到文件
+            str:  查找的文件所在的路径
+        """
+    for root, dir_list, files in os.walk(dir_name):
+        for one_file in files:
+            if one_file.lower() == file_name.lower():
+                wallet_file_path = os.path.join(root, one_file)
+                return True, wallet_file_path
+    return False, None
+
+
+# 从 keystore 中获取私钥
+def get_private_key_from_wallet_file(Account, keys, file_path, password):
+    """从钱包文件中获取私钥(platon地址格式:bech32)
+
+    Args:
+        :param password: 钱包密码
+        :param file_path: 钱包文件路径
+        :param keys: keys库（可能是Alaya或PlatON网络对应的sdk）
+        :param Account: Account库（可能是Alaya或PlatON网络对应的sdk）
+    Returns:
+        str： 账户私钥
+    """
+
+    privateKey = ""
+    with open(file_path) as keyfile:
+        encrypted_key = keyfile.read()
+        try:
+            private_key = Account.decrypt(encrypted_key, password)
+        except Exception as e:
+            cust_print("The password is not correct, please enter the correct password.{}".format(e), fg='r')
+            sys.exit(1)
+        pri = keys.PrivateKey(private_key)
+        privateKey = pri.to_hex()
+
+    return privateKey
+
+
+def input_passwd_for_linux(prompt_message="input password:", maskchar="*"):
+    print(prompt_message, end='', flush=True)
+
+    def getch():
+        import sys, tty, termios
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setraw(sys.stdin.fileno())
+            ch = sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        return ch
+
+    password = ""
+    while True:
+        ch = getch()
+        if ch == "\r" or ch == "\n":
+            sys.stdout.write('\n')
+            return password
+        elif ch == "\b" or ord(ch) == 127:
+            if len(password) > 0:
+                sys.stdout.write("\b \b")
+                password = password[:-1]
+        else:
+            if maskchar is not None:
+                sys.stdout.write(maskchar)
+            password += ch
+
+
+# windows下输入密码
+def input_passwd_for_win(prompt_message="input password:"):
+    print(prompt_message, end='', flush=True)
+    list_ch = []
+    import msvcrt
+    while 1:
+        ch = msvcrt.getch()
+        # 回车
+        if ch == b'\r':
+            msvcrt.putch(b'\n')
+            # print('输入的密码是：%s' % b''.join(li).decode())
+            break
+        # 退格
+        elif ch == b'\x08':
+            if list_ch:
+                list_ch.pop()
+                msvcrt.putch(b'\b')
+                msvcrt.putch(b' ')
+                msvcrt.putch(b'\b')
+        # Esc
+        elif ch == b'\x1b':
+            break
+        else:
+            list_ch.append(ch)
+            msvcrt.putch(b'*')
+
+    return list_ch
+
+
+'''
+#############交易模块######################
+'''
+
+
+def transaction_str_to_int(transaction_dict: dict):
+    """转换交易格式
+
+    Args:
+        transaction_dict:  交易字典
+
+    Returns:
+        dict：转换后的交易字典
+    """
+    for key, value in transaction_dict.items():
+        if key in ["value", "gasPrice", "gas", "nonce", "chainId"]:
+            transaction_dict[key] = int(value)
+    return transaction_dict
+
+
+def filter_no_transaction_fields(transaction_dict: dict):
+    """过滤非交易字段
+    Args:
+        transaction_dict:  交易字典
+
+    Returns:
+        dict：过滤非交易字段后的交易字典
+    """
+    new_transaction_dict = {}
+    for key, value in transaction_dict.items():
+        if key in ["from", "to", "data", "gas", "gasPrice", "value", "nonce", "chainId"]:
+            new_transaction_dict[key] = value
+    return new_transaction_dict
+
+
+def sign_one_transaction_by_prikey(Account, AttributeDict, dict_transaction, hrp, private_key):
+    """
+    签名交易
+    :return:
+        私钥
+        交易数据
+    """
+    # 根据交易签名
+    fields_transaction = filter_no_transaction_fields(dict_transaction)
+    one_transaction = transaction_str_to_int(fields_transaction)
+
+    sign_data = Account.signTransaction(one_transaction, private_key, hrp)
+    rawTransaction = copy(sign_data["rawTransaction"])
+    strRawData = HexBytes(rawTransaction).hex()
+
+    if AttributeDict is None:
+        return strRawData, None
+    else:
+        return strRawData, AttributeDict(sign_data, rawTransaction=strRawData)
+
+
+# 发送交易
+def send_transaction(platon, signdata, to_address="", waitTx=True) -> tuple:
+    tx_hash = HexBytes(platon.sendRawTransaction(signdata)).hex()
+    address = ""
+    if waitTx:
+        res = platon.waitForTransactionReceipt(tx_hash)
+        if to_address is None or to_address == "":
+            address = res.contractAddress
+    return tx_hash, address
+
+
+def write_csv(file_name: str, dict_list: list):
+    """将字典列表数据写进csv文件
+
+    Args:
+        file_name:  要写入的文件名称
+        dict_list： 字典列表
+
+    Raises:
+        Exception： 写入文件不是以.csv为后缀，抛出异常
+        :param file_name:
+        :param dict_list:
+    """
+    if not file_name.endswith(".csv"):
+        raise Exception("File format error")
+    with open(file_name, "w", encoding="utf-8", newline='') as f:
+        csv_write = csv.writer(f)
+        csv_head = list(dict_list[0].keys())
+        csv_write.writerow(csv_head)
+        for one_dict in dict_list:
+            csv_value = list(one_dict.values())
+            csv_write.writerow(csv_value)
 
 
 def make_zip(source_dir, output_filename):

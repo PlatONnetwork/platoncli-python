@@ -7,6 +7,7 @@ import click
 from utility import get_command_usage, get_platon_version, cust_print, get_local_platon_cfg, \
     g_current_dir, g_dict_dir_config
 from precompile_lib import Web3, HTTPProvider, Eth
+
 # 治理地址
 dict_gov_contractAddr = {
     "lat": "lat1zqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq93t3hkm",

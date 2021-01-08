@@ -1,8 +1,10 @@
 # _*_ coding:utf-8 _*_
+import os
+
 import click
 
 from precompile_lib import Web3, HTTPProvider, Eth, Admin
-from utility import get_command_usage, cust_print, init_node, \
+from utility import get_command_usage, cust_print, init_node, g_current_dir, \
     download_genesis_file, download_url_config_file, save_node_conf
 
 
@@ -18,6 +20,7 @@ from utility import get_command_usage, cust_print, init_node, \
 def init(withnode, private_chain, hrp, config):
 
     if withnode:
+        # install_node(hrp)
         init_node(hrp, private_chain, config)
     else:
         # init cli

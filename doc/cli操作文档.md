@@ -2,6 +2,8 @@
 
 ## 基本操作
 
+**注意：命令行中除了钱包文件可以直接填写文件名，参数文件都必须指定为文件的绝对路径**
+
 ### 生成版本信息
 
 - 命令
@@ -93,6 +95,12 @@ platoncli init -h [lat/lax/atp/atx]
 > -h:  地址格式类型，包括：lat/lax/atp/atx，默认lat，分别对应初始的chainid为：100/101/201018/201030；
 >
 > --private_chain/--no-private_chain：是否是搭建私链，默认为否；
+>
+> 如果是连接节点，生成的节点配置文件：node_config.json，格式如下：
+>
+> ```json
+> {"rpcAddress": "http://127.0.0.1:6789:", "hrp": "lat", "chainId": 100}
+> ```
 
 
 
@@ -117,6 +125,14 @@ platoncli node init -h [lat/lax/atp/atx]
 > -h:  地址格式类型，包括：lat/lax/atp/atx，默认lat；
 >
 > --private_chain/--no-private_chain：是否是搭建私链，默认为否；
+>
+> 
+>
+> 如果是连接节点，生成的节点配置文件：node_config.json，格式如下：
+>
+> ```json
+> {"rpcAddress": "http://127.0.0.1:6789:", "hrp": "lat", "chainId": 100}
+> ```
 
 
 
@@ -281,3 +297,652 @@ platoncli node move -o $original_path -t $tar_path -m key/data/all
 
 ## 钱包模块
 
+### 创建钱包
+
+- 命令
+
+```shell
+platoncli  account  new -n testWallet.json -h atx
+platoncli  account  new  -b 3 -h atx
+```
+
+- 参数说明
+
+-n/--name:钱包名字，如xxxx.json
+
+-h/--hrp:网络类型
+
+-b/--batch:批量生成钱包
+
+### 删除钱包
+
+- 命令
+
+~~~
+platoncli account  delete -d xxxx.json
+~~~
+
+- 参数说明
+
+-d/--address:钱包名字或者钱包地址
+
+### 修改密码
+
+- 命令
+
+~~~
+platoncli account changePassword -d xxxx.json
+~~~
+
+- 参数说明
+
+-d/--address:钱包名字或者钱包地址
+
+### 查看钱包余额
+
+- 命令
+
+~~~
+platoncli account blance -d wallet_address -c xxxx.json
+~~~
+
+- 参数说明
+
+-d/--address:钱包地址
+
+-c/--config:节点配置文件（非必填）
+
+### 离线签名
+
+- 命令
+
+~~~
+platoncli account sign -d xxxx.csv -a xxxx.json
+~~~
+
+- 参数说明
+
+-d/--data:待签名的数据
+
+-a/--address:钱包名字或者钱包地址
+
+### 钱包恢复
+
+- 命令
+
+~~~
+platoncli account recovery -t private
+~~~
+
+- 参数说明
+
+-t/types:类型mnemonic or private，目前只支持priveKey进行恢复
+
+## 链基本信息
+
+### 查询块高
+
+- 命令
+
+~~~
+platoncli query  blockNumber -c xxxx.json
+~~~
+
+- 参数说明
+
+-c/--config:节点配置文件（非必填）
+
+### 根据块高查询区块信息
+
+- 命令
+
+~~~
+platoncli query  getBlockByNumber -n 100 -c xxxx.json
+~~~
+
+- 参数说明
+
+-c/--config:节点配置文件（非必填）
+
+-n/--number:区块的快高
+
+### 根据区块hash查询区块信息
+
+- 命令
+
+~~~
+platoncli query  getBlockByNumber -h xxxxxxxxxxxxx -c xxxx.json
+~~~
+
+- 参数说明
+
+-c/--config:节点配置文件（非必填）
+
+-n/--hash:区块的hash
+
+### 查询当前的结算周期的区块奖励
+
+- 命令
+
+```
+platoncli query getPackageReward -c xxxx.json
+```
+
+- 参数说明
+
+-c/--config:节点配置文件（非必填）
+
+### 查询区块打包的平均时间
+
+- 命令
+
+~~~
+platoncli query getAvgPackTime -c xxxx.json
+~~~
+
+- 参数说明
+
+-c/--config:节点配置文件（非必填）
+
+## 质押模块
+
+### 质押交易
+
+- 命令
+
+~~~
+platoncli staking create -f staking_create_params.json -d staking.json
+~~~
+
+- 参数说明
+
+-f/--file:创建质押交易所需要的参数
+
+-d/--address:钱包名或钱包地址
+
+-t/--template:查看file所需要的参数都有哪些（非必填）
+
+-c/--config:节点配置文件（非必填）
+
+-o/--offline:是否生成待签名文件（离线交易，非必填）
+
+-s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
+
+### 修改质押信息
+
+- 命令
+
+~~~
+platoncli staking update -f staking_update_params.json -d staking.json
+~~~
+
+
+
+- 参数说明
+
+-f/--file:创建质押交易所需要的参数
+
+-d/--address:钱包名或钱包地址
+
+-t/--template:查看file所需要的参数都有哪些（非必填）
+
+-c/--config:节点配置文件（非必填）
+
+-o/--offline:是否生成待签名文件（离线交易，非必填）
+
+-s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
+
+### 退出质押交易
+
+- 命令
+
+~~~
+platoncli staking unStaking -d staking.json -f staking_unStaking_params.json
+~~~
+
+- 参数说明
+
+-f/--file:创建质押交易所需要的参数
+
+-d/--address:钱包名或钱包地址
+
+-c/--config:节点配置文件（非必填）
+
+-o/--offline:是否生成待签名文件（离线交易，非必填）
+
+-s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
+
+### 增持质押交易
+
+- 命令
+
+~~~
+platoncli staking increase -d staking.json -f staking_increase_params.json
+~~~
+
+- 参数说明
+
+-f/--file:创建质押交易所需要的参数
+
+-d/--address:钱包名或钱包地址
+
+-t/--template:查看file所需要的参数都有哪些（非必填）
+
+-c/--config:节点配置文件（非必填）
+
+-o/--offline:是否生成待签名文件（离线交易，非必填）
+
+-s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
+
+### 查询
+
+- 命令
+
+~~~
+platoncli staking query -f getVerifierList			#查询当前共识周期验证人列表
+platoncli staking query -f getValidatorList			#查询当前共识周期的验证人列表
+platoncli staking query -f getCandidateList			#查询所有实时的候选人列表
+platoncli staking query -f getCandidateInfo			#查询当前的结算周期的质押奖励
+platoncli staking query -f getStakingReward -n xxxxx#根据nodeid查询节点质押信息
+~~~
+
+- 参数说明
+
+-f/--function:查询类型，必填
+
+-n/--nodeid:节点ID，非必填
+
+## 委托模块
+
+### 创建委托
+
+- 命令
+
+~~~
+platoncli delegate new -p delegate_new_params.json -d test_delegate.json
+~~~
+
+- 参数说明
+
+-p/--params:创建质押交易所需要的参数
+
+-d/--address:钱包名或钱包地址
+
+-t/--template:查看file所需要的参数都有哪些（非必填）
+
+-c/--config:节点配置文件（非必填）
+
+-o/--offline:是否生成待签名文件（离线交易，非必填）
+
+-s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
+
+### 减持/撤销委托
+
+- 命令
+
+~~~
+platoncli delegate unDelegate -p delegate_new_params.json -d test_delegate.json
+~~~
+
+- 参数说明
+
+-p/--params:创建质押交易所需要的参数
+
+-d/--address:钱包名或钱包地址
+
+-t/--template:查看file所需要的参数都有哪些（非必填）
+
+-c/--config:节点配置文件（非必填）
+
+-o/--offline:是否生成待签名文件（离线交易，非必填）
+
+-s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
+
+### 查询账户在各节点未提取委托奖励
+
+- 命令
+
+~~~
+platoncli delegate  getDelegateReward -p params.json
+~~~
+
+- 参数说明
+
+-p/--params:创建质押交易所需要的参数
+
+-c/--config:节点配置文件（非必填）
+
+### 提取委托奖励
+
+- 命令
+
+~~~
+platoncli delegate withdrawDelegateReward -d wallet.json/atx1mxpyhpmtcdsgy6cg9dv6ze6sajdek4fpt4sdj5（钱包名或钱包地址）
+~~~
+
+- 参数说明
+
+-d/--address:钱包名或钱包地址
+
+-c/--config:节点配置文件（非必填）
+
+-o/--offline:是否生成待签名文件（离线交易，非必填）
+
+-s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
+
+### 查询当前账户地址所委托的节点的NodeId和质押Id
+
+- 命令
+
+~~~
+platoncli delegate getRelatedListByDelAddress -d 钱包名或钱包地址
+~~~
+
+- 参数说明
+
+-d/--address:钱包名或钱包地址
+
+-c/--config:节点配置文件（非必填）
+
+## 治理模块
+
+### 提案相关
+
+- 文本提案参数（写入到government.json文件）
+
+~~~
+{
+  "verifier": "da99eb65da965e24684be1703a25e434a8a2036b19def8b4563cc16a8463b76abf44ef5bf639d790e4ce3a8fcb6697d1fd7e9140ad61438ebb492fba5dd931a2",
+  "pIDID": "012345678",
+  "transaction_cfg":{"gas":1000000,
+                   "gasPrice":3000000000000000,
+                   "nonce":null}
+}
+~~~
+
+- 升级提案（写入到government.json文件）
+
+~~~
+{
+  "verifier": "da99eb65da965e24684be1703a25e434a8a2036b19def8b4563cc16a8463b76abf44ef5bf639d790e4ce3a8fcb6697d1fd7e9140ad61438ebb492fba5dd931a2",
+  "pIDID": "202101041633",
+  "endVotingRound": 1,
+  "newVersion": 202111,
+  "transaction_cfg":{"gas":1000000,
+                   "gasPrice":3000000000000000,
+                   "nonce":null}
+}
+~~~
+
+- 参数提案（写入到government.json文件）
+
+~~~
+{
+  "verifier": "da99eb65da965e24684be1703a25e434a8a2036b19def8b4563cc16a8463b76abf44ef5bf639d790e4ce3a8fcb6697d1fd7e9140ad61438ebb492fba5dd931a2",
+  "pIDID": "202101041643",
+  "module": "reward",
+  "name": "increaseIssuanceRatio",
+  "newValue": "700",
+  "transaction_cfg": {
+    "gas": 1000000,
+    "gasPrice": 3000000000000000,
+    "nonce": null
+  }
+}
+~~~
+
+- 删除提案（写入到government.json文件）
+
+~~~
+{
+  "verifier": "da99eb65da965e24684be1703a25e434a8a2036b19def8b4563cc16a8463b76abf44ef5bf639d790e4ce3a8fcb6697d1fd7e9140ad61438ebb492fba5dd931a2",
+  "pIDID": "202101041633",
+  "endVotingRound": 1,
+  "canceledProposalID": "e76954762f11994cd3cb619149f0995a907c09542e8c283aaed3faccc87b8383",
+  "transaction_cfg":{"gas":1000000,
+                   "gasPrice":3000000000000000,
+                   "nonce":null}
+}
+~~~
+
+- 命令
+
+~~~
+platoncli government submitProposal -p D:\project\platoncli\test_params_file\government.json -d atx1gjfg7ajul09r246e
+gegr3xqglxdh0r7unnej8h -m TextProposal -o
+~~~
+
+- 参数说明
+
+-p/--params:创建质押交易所需要的参数
+
+-d/--address:钱包名或钱包地址
+
+-m/--module:文本（TextProposal）、升级（VersionProposal）、参数（ParamProposal）、取消提案（CancelProposal）
+
+-t/--template:查看file所需要的参数都有哪些（非必填）
+
+-c/--config:节点配置文件（非必填）
+
+-o/--offline:是否生成待签名文件（离线交易，非必填）
+
+-s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填
+
+### 查询提案列表
+
+- 命令
+
+~~~
+platoncli government listProposal
+~~~
+
+- 参数说明
+
+-c/--config:节点配置文件（非必填）
+
+### 查询治理参数列表
+
+- 命令
+
+~~~
+platoncli government listGovernParam
+~~~
+
+- 参数说明
+
+-c/--config:节点配置文件（非必填）
+
+### 根据提案id查询提案信息
+
+- 命令
+
+~~~
+platoncli government getProposal -pid xxxxxx
+~~~
+
+- 参数说明
+
+-c/--config:节点配置文件（非必填）
+
+-pid/--proposal_id:提案ID
+
+### 查询最新的治理参数值
+
+- 命令
+
+~~~
+platoncli government getGovernParamValue -m xxx -n xxxx
+~~~
+
+- 参数说明
+
+-m/--module:参数模块
+
+-n/--name:参数名字
+
+-c/--config:节点配置文件（非必填）
+
+### 查询节点的链生效版本
+
+- 命令
+
+~~~
+platoncli government getActiveVersion
+~~~
+
+- 参数说明
+
+-c/--config:节点配置文件（非必填）
+
+### 查询提案结果
+
+- 命令
+
+platoncli government getTallyResult -pid xxxx
+
+- 参数说明
+
+-c/--config:节点配置文件（非必填）
+
+-pid/--proposal_id:提案ID
+
+### 查询提案的累计可投票人数
+
+- 命令
+
+~~~
+platoncli government getAccuVerifiersCount -h xxxx -pid xxxx
+~~~
+
+- 参数说明
+
+-c/--config:节点配置文件（非必填）
+
+-pid/--proposal_id:提案ID
+
+-h/--hash:The hash of the current latest block
+
+### 查询节点是否已被举报过多签
+
+- 命令
+
+~~~
+platoncli government checkDuplicateSign -t 2 -n xxx -b 10000
+~~~
+
+- 参数说明
+
+-t/--type：多签类型，代表双签类型，1：prepareBlock，2：prepareVote，3：viewChange
+
+-n/--nodeid:节点ID
+
+-b/--blocknumber:块高
+
+-c/--config:节点配置文件（非必填）
+
+### 提案投票
+
+### 版本声明
+
+- 命令
+
+~~~
+platoncli government declareVersion -p D:\project\platoncli\test_params_file\government.json -d atp155nj3uwdpej7w0jc6hgttskwf4j4gjx948hxjk
+~~~
+
+- 参数说明
+
+-p/--params:创建交易所需要的参数
+
+-d/--address:钱包名或钱包地址
+
+-c/--config:节点配置文件（非必填）
+
+-o/--offline:是否生成待签名文件（离线交易，非必填）
+
+-s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
+
+- 参数文件（写入government.json）
+
+~~~
+{
+ "activeNode": "19f1c9aa5140bd1304a3260de640a521c33015da86b88cd2ecc83339b558a4d4afa4bd0555d3fa16ae43043aeb4fbd32c92b34de1af437811de51d966dc64365",
+  "transaction_cfg": {
+    "gas": 1000000,
+    "gasPrice": 3000000000000000,
+    "nonce": null
+  }
+}
+~~~
+
+### 举报双签
+
+- 命令
+
+~~~
+platoncli government reportDoubleSign --address <walletName.json> --param xxxxxxxxxxxxx
+~~~
+
+- 参数说明
+
+-p/--params:创建交易所需要的参数
+
+-d/--address:钱包名或钱包地址
+
+-c/--config:节点配置文件（非必填）
+
+-o/--offline:是否生成待签名文件（离线交易，非必填）
+
+-s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
+
+## 锁仓模块
+
+### 创建锁仓计划
+
+- 命令
+
+~~~
+platoncli hedge -p hedge.json -d xxx.json
+~~~
+
+- 参数说明
+
+-p/--params:创建交易所需要的参数
+
+-d/--address:钱包名或钱包地址
+
+-c/--config:节点配置文件（非必填）
+
+-o/--offline:是否生成待签名文件（离线交易，非必填）
+
+-s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
+
+- 参数文件hedge.json
+
+~~~
+{
+  "account":"atx1ye5mdkq33937cz9xcpa94jgn9k54sqt758cskj",
+  "plans": [
+    {
+      "epoch": 300,
+      "amount": 1000
+    }
+  ]
+}
+~~~
+
+
+
+###  获取锁仓信息
+
+- 命令
+
+~~~
+platoncli hedge GetRestrictingInfo -a xxxx
+~~~
+
+- 参数说明
+
+-c/--config:节点配置文件（非必填）
+
+-a/--address:锁仓释放到账账户（必须为钱包地址）

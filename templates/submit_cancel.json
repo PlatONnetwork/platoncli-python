@@ -1,0 +1,9 @@
+{
+  "verifier": "da99eb65da965e24684be1703a25e434a8a2036b19def8b4563cc16a8463b76abf44ef5bf639d790e4ce3a8fcb6697d1fd7e9140ad61438ebb492fba5dd931a2",
+  "pIDID": "202101041633",
+  "endVotingRound": 1,
+  "canceledProposalID": "e76954762f11994cd3cb619149f0995a907c09542e8c283aaed3faccc87b8383",
+  "transaction_cfg":{"gas":1000000,
+                   "gasPrice":3000000000000000,
+                   "nonce":null}
+}

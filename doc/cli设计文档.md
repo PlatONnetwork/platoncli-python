@@ -222,16 +222,14 @@ platoncli submodule command params
 
 ### 发版文件
 
-发版底层二进制时，匹配当前PlatON和Alaya网络底层最后一个版本放到服务器上，以PlatON的0.13.0和Alaya的0.13.1为例：
+发版底层二进制时，匹配当前PlatON和Alaya网络底层最后一个版本放到服务器上，以PlatON的0.14.0和Alaya的0.13.1为例：
 
 - 资源下载配置文件：download_conf.json
 
   ```json
   {
-      "platon_binary_url": "https://github.com/PlatONnetwork/downloads/releases/download/platon/0.13.0/binaries/platon-linux-amd64.tar.gz",
-  	"platon_genesis_url": "https://github.com/PlatONnetwork/downloads/releases/download/platon/0.13.0/genesis/genesis.json",
-  	"alaya_binary_url": "https://github.com/PlatONnetwork/downloads/releases/download/alaya/0.13.1/binaries/platon-linux-amd64.tar.gz",
-  	"alaya_genesis_url": "https://github.com/PlatONnetwork/downloads/releases/download/alaya/0.13.1/genesis/genesis.json"
+  	"platon_url": "https://github.com/PlatONnetwork/downloads/releases/download/platon/0.14.0",
+  	"alaya_url": "https://github.com/PlatONnetwork/downloads/releases/download/alaya/0.13.1"
   }
   ```
 
@@ -287,6 +285,14 @@ platoncli submodule command params
 
   ```shell
   0 * * * * /usr/sbin/logrotate -s ${base_dir}/log/.status ${base_dir}/conf/.platon_logrotate
+  ```
+
+  
+
+- 节点配置文件node_config.json
+
+  ```json
+  {"rpcAddress": "http://127.0.0.1:6789:", "hrp": "atp", "chainId": 201018}
   ```
 
   

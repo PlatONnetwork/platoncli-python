@@ -1,0 +1,8 @@
+{
+  "activeNode": "19f1c9aa5140bd1304a3260de640a521c33015da86b88cd2ecc83339b558a4d4afa4bd0555d3fa16ae43043aeb4fbd32c92b34de1af437811de51d966dc64365",
+  "transaction_cfg": {
+    "gas": 1000000,
+    "gasPrice": 3000000000000000,
+    "nonce": null
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "typ": 0,
+  "benifit_address": "atp1tafunymdk222q2wma3fmncnrkksnkys9uphfmn",
+  "node_id": "7eb6e8c328939f3d34cf75171575c6942df351c715d98f1bc893ba8ec71d32ba6a741527734d4e27f13b74350f678f795cc225b1b01d850e1a5519a42f2a4de6",
+  "external_id": "MyKeyBaseId-162",
+  "node_name": "MyNodeName-162",
+  "website": "http://www.mycompany.162.com",
+  "details": "My Node Description-162",
+  "amount": 10000,
+  "program_version": 3840,
+  "program_version_sign": "0xc9898172369fc71d6ad539c28bf1690ea956766dcf1dd92090f91280f72b120a1999f55a55e2dae5f0c7ff7350b23fa03a44dce388be1850529f8b6528e3508a00",
+  "bls_pubkey": "71bf30e1a35895558dfd4be892fbda695a62d6253097ed3f2dded8953ecea2e388bfbdf00e6a3def9d40a185b51e071426cc4c0930ea3b7940effa57c04cd1346c0cdb9cb88c1ec73f2207778bcc28688b57f9cac7a53c1f0f237dc232ea8391",
+  "bls_proof": "0b49de71c482644e2a5c288a988f82ee6ca1f6dbc75a37db7bd5026317fb54025d16bff948e0559acb1ebe9f429877a19fbbe779ef492b87c204384b7f2b9763",
+  "reward_per": 1,
+  "transaction_cfg": ""
+}
