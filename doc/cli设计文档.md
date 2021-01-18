@@ -239,18 +239,19 @@ platoncli submodule command params
 
   ```toml
   [platon]
+  hrp = ${hrp}
   network = ${network}
   identity = platon
-  datadir = ./data
-  port = 16789
+  datadir = ./platon/data
+  port = 16790
   rpcaddr = 127.0.0.1
-  rpcport = 6789
+  rpcport = 6790
   rpcapi = db,platon,net,web3,admin,personal
-  nodekey = ./nodekey
-  blskey = ./blskey
+  nodekey = ./platon/nodeKey/nodekey
+  blskey = ./platon/blsKey/blskey
   verbosity = 3
   syncmode = fast
-  logfile = ./log/platon.log
+  logfile = ./platon/log/platon.log
   ```
 
   

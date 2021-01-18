@@ -11,16 +11,14 @@ import precompile_lib
 
 # cli二进制/platoncli.py所在目录(多节点目录下执行时，需要通过绝对路径搜索子模块，子命令文件)
 cli_bin_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-if platform.system().lower() == "linux":
-    # 当前目录是否有platoncli.py文件, 如不存在，从环境变量中找
-    if not os.path.exists(os.path.realpath(sys.argv[0])):
-        # which获取platoncli的路径
-        cmd = "which platoncli"
-        proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout, stderr = proc.communicate()
-        ret = proc.poll()
-        if 0 == ret:
-            cli_bin_path, _ = os.path.split(stdout.decode('utf8').strip())
+platoncli_py = os.path.join(cli_bin_path, 'platoncli.py')
+if not os.path.isfile(platoncli_py):
+    cmd = "where platoncli" if platform.system().lower() == "windows" else "which platoncli"
+    proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = proc.communicate()
+    ret = proc.poll()
+    if 0 == ret:
+        cli_bin_path, _ = os.path.split(stdout.decode('utf8').strip())
 
 # 源码目录名称
 code_dir_name = "{}/src".format(cli_bin_path)
