@@ -1,0 +1,21 @@
+${base_dir}/log/platon.log {
+    rotate 24
+    copytruncate
+    missingok
+    notifempty
+    olddir ${base_dir}/log
+    dateext
+    dateformat .%Y%m%d-%H
+    compress
+}
+
+${base_dir}/log/platoncli.log {
+    rotate 24
+    copytruncate
+    missingok
+    notifempty
+    olddir ${base_dir}/log
+    dateext
+    dateformat .%Y%m%d-%H
+    compress
+}

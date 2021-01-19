@@ -9,7 +9,7 @@ from utility import get_command_usage, cust_print, init_node
               help='Address prefix, \'atp/atx\' Are the main network and test network addresses of Alaya network '
                    'respectively; '
                    '\'lat/lax\' Are the primary and test network addresses of PlatON network respectively.')
-@click.option('--private_chain/--no-private_chain', default=False, help='是否是搭建私链.')
+@click.option('-p', '--private_chain', default=False, help='是否是搭建私链.')
 @click.option('-c', '--config', default="", help="genesis block config.")
 def init(hrp, private_chain, config):
     """
