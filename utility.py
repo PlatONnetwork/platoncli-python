@@ -1083,6 +1083,15 @@ def startup_node():
         time.sleep(1)
 
         pid = get_pid(PLATON_NAME, int(r['rpcport']))
+        chainId = 100
+        if 'atp' == hrp:
+            chainId = 201018
+        elif 'atx' == hrp:
+            chainId = 201030
+        elif 'lax' == hrp:
+            chainId = 101
+        else:
+            pass
         if pid:
             start_tail_time = int(get_time_stamp())
             end_tail_time = int(get_time_stamp())
@@ -1095,7 +1104,7 @@ def startup_node():
 
                     # time.sleep(1)
                     end_tail_time = int(get_time_stamp())
-
+            save_node_conf(r['rpcaddr'], r['rpcport'], r['hrp'], chainId)
             cust_print('Start platon successfully, pid:{}, rpc port:{}...'.format(pid, int(r['rpcport'])), fg='g')
         else:
             cust_print('Failed to start platon, rpc_port: {}'.format(int(r['rpcport'])), fg='r')

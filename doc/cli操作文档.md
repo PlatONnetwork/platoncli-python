@@ -96,6 +96,10 @@ platoncli init -h [lat/lax/atp/atx]
 >
 > --private_chain/--no-private_chain：是否是搭建私链，默认为否；
 >
+> --withnode/-w:是否初始化节点，默认不初始化
+>
+> --config/-c：指定创世区块的文件（如果不指定，则远端下载）
+>
 > 如果是连接节点，生成的节点配置文件：node_config.json，格式如下：
 >
 > ```json
@@ -126,7 +130,7 @@ platoncli node init -h [lat/lax/atp/atx]
 >
 > --private_chain/--no-private_chain：是否是搭建私链，默认为否；
 >
-> 
+> --config/-c：指定创世区块的文件（如果不指定，则远端下载）
 >
 > 如果是连接节点，生成的节点配置文件：node_config.json，格式如下：
 >
@@ -308,63 +312,63 @@ platoncli  account  new  -b 3 -h atx
 
 - 参数说明
 
--n/--name:钱包名字，如xxxx.json
-
--h/--hrp:网络类型
-
--b/--batch:批量生成钱包
+>-n/--name:钱包名字，如wallet.json
+>
+>-h/--hrp:网络类型
+>
+>-b/--batch:批量生成钱包
 
 ### 删除钱包
 
 - 命令
 
 ~~~
-platoncli account  delete -d xxxx.json
+platoncli account  delete -d wallet.json
 ~~~
 
 - 参数说明
 
--d/--address:钱包名字或者钱包地址
+> -d/--address:钱包名字或者钱包地址
 
 ### 修改密码
 
 - 命令
 
 ~~~
-platoncli account changePassword -d xxxx.json
+platoncli account changePassword -d wallet.json
 ~~~
 
 - 参数说明
 
--d/--address:钱包名字或者钱包地址
+> -d/--address:钱包名字或者钱包地址
 
 ### 查看钱包余额
 
 - 命令
 
 ~~~
-platoncli account blance -d wallet_address -c xxxx.json
+platoncli account blance -d wallet_address -c node_config.json
 ~~~
 
 - 参数说明
 
--d/--address:钱包地址
-
--c/--config:节点配置文件（非必填）
+>-d/--address:钱包地址
+>
+>-c/--config:节点配置文件（非必填）
 
 ### 离线签名
 
 - 命令
 
 ~~~
-platoncli account sign -d xxxx.csv -a xxxx.json
+platoncli account sign -d xxxx.csv -a wallet.json
 ~~~
 
 - 参数说明
 
--d/--data:待签名的数据
-
--a/--address:钱包名字或者钱包地址
+>-d/--data:待签名的数据
+>
+>-a/--address:钱包名字或者钱包地址
 
 ### 钱包恢复
 
@@ -376,7 +380,7 @@ platoncli account recovery -t private
 
 - 参数说明
 
--t/types:类型mnemonic or private，目前只支持priveKey进行恢复
+> -t/types:类型mnemonic or private，目前只支持priveKey进行恢复
 
 ## 链基本信息
 
@@ -385,64 +389,64 @@ platoncli account recovery -t private
 - 命令
 
 ~~~
-platoncli query  blockNumber -c xxxx.json
+platoncli query  blockNumber -c node_config.json
 ~~~
 
 - 参数说明
 
--c/--config:节点配置文件（非必填）
+> -c/--config:节点配置文件（非必填）
 
 ### 根据块高查询区块信息
 
 - 命令
 
 ~~~
-platoncli query  getBlockByNumber -n 100 -c xxxx.json
+platoncli query  getBlockByNumber -n 100 -c node_config.json
 ~~~
 
 - 参数说明
 
--c/--config:节点配置文件（非必填）
-
--n/--number:区块的快高
+>-c/--config:节点配置文件（非必填）
+>
+>-n/--number:区块的快高
 
 ### 根据区块hash查询区块信息
 
 - 命令
 
 ~~~
-platoncli query  getBlockByNumber -h xxxxxxxxxxxxx -c xxxx.json
+platoncli query  getBlockByNumber -h <hash> -c node_config.json
 ~~~
 
 - 参数说明
 
--c/--config:节点配置文件（非必填）
-
--n/--hash:区块的hash
+>-c/--config:节点配置文件（非必填）
+>
+>-n/--hash:区块的hash
 
 ### 查询当前的结算周期的区块奖励
 
 - 命令
 
 ```
-platoncli query getPackageReward -c xxxx.json
+platoncli query getPackageReward -c node_config.json
 ```
 
 - 参数说明
 
--c/--config:节点配置文件（非必填）
+> -c/--config:节点配置文件（非必填）
 
 ### 查询区块打包的平均时间
 
 - 命令
 
 ~~~
-platoncli query getAvgPackTime -c xxxx.json
+platoncli query getAvgPackTime -c node_config.json
 ~~~
 
 - 参数说明
 
--c/--config:节点配置文件（非必填）
+> -c/--config:节点配置文件（非必填）
 
 ## 质押模块
 
@@ -456,17 +460,17 @@ platoncli staking create -f staking_create_params.json -d staking.json
 
 - 参数说明
 
--f/--file:创建质押交易所需要的参数
-
--d/--address:钱包名或钱包地址
-
--t/--template:查看file所需要的参数都有哪些（非必填）
-
--c/--config:节点配置文件（非必填）
-
--o/--offline:是否生成待签名文件（离线交易，非必填）
-
--s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
+>-f/--file:创建质押交易所需要的参数
+>
+>-d/--address:钱包名或钱包地址
+>
+>-t/--template:查看file所需要的参数都有哪些（非必填）
+>
+>-c/--config:节点配置文件（非必填）
+>
+>-o/--offline:是否生成待签名文件（离线交易，非必填）
+>
+>-s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
 
 ### 修改质押信息
 
@@ -480,17 +484,17 @@ platoncli staking update -f staking_update_params.json -d staking.json
 
 - 参数说明
 
--f/--file:创建质押交易所需要的参数
-
--d/--address:钱包名或钱包地址
-
--t/--template:查看file所需要的参数都有哪些（非必填）
-
--c/--config:节点配置文件（非必填）
-
--o/--offline:是否生成待签名文件（离线交易，非必填）
-
--s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
+>-f/--file:创建质押交易所需要的参数
+>
+>-d/--address:钱包名或钱包地址
+>
+>-t/--template:查看file所需要的参数都有哪些（非必填）
+>
+>-c/--config:节点配置文件（非必填）
+>
+>-o/--offline:是否生成待签名文件（离线交易，非必填）
+>
+>-s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
 
 ### 退出质押交易
 
@@ -502,15 +506,15 @@ platoncli staking unStaking -d staking.json -f staking_unStaking_params.json
 
 - 参数说明
 
--f/--file:创建质押交易所需要的参数
-
--d/--address:钱包名或钱包地址
-
--c/--config:节点配置文件（非必填）
-
--o/--offline:是否生成待签名文件（离线交易，非必填）
-
--s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
+>-f/--file:创建质押交易所需要的参数
+>
+>-d/--address:钱包名或钱包地址
+>
+>-c/--config:节点配置文件（非必填）
+>
+>-o/--offline:是否生成待签名文件（离线交易，非必填）
+>
+>-s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
 
 ### 增持质押交易
 
@@ -522,35 +526,37 @@ platoncli staking increase -d staking.json -f staking_increase_params.json
 
 - 参数说明
 
--f/--file:创建质押交易所需要的参数
-
--d/--address:钱包名或钱包地址
-
--t/--template:查看file所需要的参数都有哪些（非必填）
-
--c/--config:节点配置文件（非必填）
-
--o/--offline:是否生成待签名文件（离线交易，非必填）
-
--s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
+>-f/--file:创建质押交易所需要的参数
+>
+>-d/--address:钱包名或钱包地址
+>
+>-t/--template:查看file所需要的参数都有哪些（非必填）
+>
+>-c/--config:节点配置文件（非必填）
+>
+>-o/--offline:是否生成待签名文件（离线交易，非必填）
+>
+>-s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
 
 ### 查询
 
 - 命令
 
+依次对应查询当前共识周期验证人列表、查询当前共识周期的验证人列表、查询当前共识周期的验证人列表、查询当前的结算周期的质押奖励、根据nodeid查询节点质押信息
+
 ~~~
-platoncli staking query -f getVerifierList			#查询当前共识周期验证人列表
-platoncli staking query -f getValidatorList			#查询当前共识周期的验证人列表
-platoncli staking query -f getCandidateList			#查询所有实时的候选人列表
-platoncli staking query -f getCandidateInfo			#查询当前的结算周期的质押奖励
-platoncli staking query -f getStakingReward -n xxxxx#根据nodeid查询节点质押信息
+platoncli staking query -f getVerifierList			
+platoncli staking query -f getValidatorList			
+platoncli staking query -f getCandidateList			
+platoncli staking query -f getCandidateInfo			
+platoncli staking query -f getStakingReward -n <nodeid>
 ~~~
 
 - 参数说明
 
--f/--function:查询类型，必填
-
--n/--nodeid:节点ID，非必填
+>-f/--function:查询类型，必填
+>
+>-n/--nodeid:节点ID，非必填
 
 ## 委托模块
 
@@ -564,17 +570,17 @@ platoncli delegate new -p delegate_new_params.json -d test_delegate.json
 
 - 参数说明
 
--p/--params:创建质押交易所需要的参数
-
--d/--address:钱包名或钱包地址
-
--t/--template:查看file所需要的参数都有哪些（非必填）
-
--c/--config:节点配置文件（非必填）
-
--o/--offline:是否生成待签名文件（离线交易，非必填）
-
--s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
+>-p/--params:创建质押交易所需要的参数
+>
+>-d/--address:钱包名或钱包地址
+>
+>-t/--template:查看file所需要的参数都有哪些（非必填）
+>
+>-c/--config:节点配置文件（非必填）
+>
+>-o/--offline:是否生成待签名文件（离线交易，非必填）
+>
+>-s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
 
 ### 减持/撤销委托
 
@@ -586,17 +592,17 @@ platoncli delegate unDelegate -p delegate_new_params.json -d test_delegate.json
 
 - 参数说明
 
--p/--params:创建质押交易所需要的参数
-
--d/--address:钱包名或钱包地址
-
--t/--template:查看file所需要的参数都有哪些（非必填）
-
--c/--config:节点配置文件（非必填）
-
--o/--offline:是否生成待签名文件（离线交易，非必填）
-
--s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
+>-p/--params:创建质押交易所需要的参数
+>
+>-d/--address:钱包名或钱包地址
+>
+>-t/--template:查看file所需要的参数都有哪些（非必填）
+>
+>-c/--config:节点配置文件（非必填）
+>
+>-o/--offline:是否生成待签名文件（离线交易，非必填）
+>
+>-s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
 
 ### 查询账户在各节点未提取委托奖励
 
@@ -608,9 +614,9 @@ platoncli delegate  getDelegateReward -p params.json
 
 - 参数说明
 
--p/--params:创建质押交易所需要的参数
-
--c/--config:节点配置文件（非必填）
+>-p/--params:创建质押交易所需要的参数
+>
+>-c/--config:节点配置文件（非必填）
 
 ### 提取委托奖励
 
@@ -622,13 +628,13 @@ platoncli delegate withdrawDelegateReward -d wallet.json/atx1mxpyhpmtcdsgy6cg9dv
 
 - 参数说明
 
--d/--address:钱包名或钱包地址
-
--c/--config:节点配置文件（非必填）
-
--o/--offline:是否生成待签名文件（离线交易，非必填）
-
--s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
+>-d/--address:钱包名或钱包地址
+>
+>-c/--config:节点配置文件（非必填）
+>
+>-o/--offline:是否生成待签名文件（离线交易，非必填）
+>
+>-s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
 
 ### 查询当前账户地址所委托的节点的NodeId和质押Id
 
@@ -640,9 +646,9 @@ platoncli delegate getRelatedListByDelAddress -d 钱包名或钱包地址
 
 - 参数说明
 
--d/--address:钱包名或钱包地址
-
--c/--config:节点配置文件（非必填）
+>-d/--address:钱包名或钱包地址
+>
+>-c/--config:节点配置文件（非必填）
 
 ## 治理模块
 
@@ -714,19 +720,19 @@ gegr3xqglxdh0r7unnej8h -m TextProposal -o
 
 - 参数说明
 
--p/--params:创建质押交易所需要的参数
-
--d/--address:钱包名或钱包地址
-
--m/--module:文本（TextProposal）、升级（VersionProposal）、参数（ParamProposal）、取消提案（CancelProposal）
-
--t/--template:查看file所需要的参数都有哪些（非必填）
-
--c/--config:节点配置文件（非必填）
-
--o/--offline:是否生成待签名文件（离线交易，非必填）
-
--s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填
+>-p/--params:创建质押交易所需要的参数
+>
+>-d/--address:钱包名或钱包地址
+>
+>-m/--module:文本（TextProposal）、升级（VersionProposal）、参数（ParamProposal）、取消提案（CancelProposal）
+>
+>-t/--template:查看file所需要的参数都有哪些（非必填）
+>
+>-c/--config:节点配置文件（非必填）
+>
+>-o/--offline:是否生成待签名文件（离线交易，非必填）
+>
+>-s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填
 
 ### 查询提案列表
 
@@ -738,7 +744,7 @@ platoncli government listProposal
 
 - 参数说明
 
--c/--config:节点配置文件（非必填）
+> -c/--config:节点配置文件（非必填）
 
 ### 查询治理参数列表
 
@@ -750,7 +756,7 @@ platoncli government listGovernParam
 
 - 参数说明
 
--c/--config:节点配置文件（非必填）
+> -c/--config:节点配置文件（非必填）
 
 ### 根据提案id查询提案信息
 
@@ -762,9 +768,9 @@ platoncli government getProposal -pid xxxxxx
 
 - 参数说明
 
--c/--config:节点配置文件（非必填）
-
--pid/--proposal_id:提案ID
+>-c/--config:节点配置文件（非必填）
+>
+>-pid/--proposal_id:提案ID
 
 ### 查询最新的治理参数值
 
@@ -776,11 +782,11 @@ platoncli government getGovernParamValue -m xxx -n xxxx
 
 - 参数说明
 
--m/--module:参数模块
-
--n/--name:参数名字
-
--c/--config:节点配置文件（非必填）
+>-m/--module:参数模块
+>
+>-n/--name:参数名字
+>
+>-c/--config:节点配置文件（非必填）
 
 ### 查询节点的链生效版本
 
@@ -792,7 +798,7 @@ platoncli government getActiveVersion
 
 - 参数说明
 
--c/--config:节点配置文件（非必填）
+> -c/--config:节点配置文件（非必填）
 
 ### 查询提案结果
 
@@ -802,9 +808,9 @@ platoncli government getTallyResult -pid xxxx
 
 - 参数说明
 
--c/--config:节点配置文件（非必填）
-
--pid/--proposal_id:提案ID
+>-c/--config:节点配置文件（非必填）
+>
+>-pid/--proposal_id:提案ID
 
 ### 查询提案的累计可投票人数
 
@@ -816,11 +822,11 @@ platoncli government getAccuVerifiersCount -h xxxx -pid xxxx
 
 - 参数说明
 
--c/--config:节点配置文件（非必填）
-
--pid/--proposal_id:提案ID
-
--h/--hash:The hash of the current latest block
+>-c/--config:节点配置文件（非必填）
+>
+>-pid/--proposal_id:提案ID
+>
+>-h/--hash:The hash of the current latest block
 
 ### 查询节点是否已被举报过多签
 
@@ -832,13 +838,13 @@ platoncli government checkDuplicateSign -t 2 -n xxx -b 10000
 
 - 参数说明
 
--t/--type：多签类型，代表双签类型，1：prepareBlock，2：prepareVote，3：viewChange
-
--n/--nodeid:节点ID
-
--b/--blocknumber:块高
-
--c/--config:节点配置文件（非必填）
+>-t/--type：多签类型，代表双签类型，1：prepareBlock，2：prepareVote，3：viewChange
+>
+>-n/--nodeid:节点ID
+>
+>-b/--blocknumber:块高
+>
+>-c/--config:节点配置文件（非必填）
 
 ### 提案投票
 
@@ -852,15 +858,15 @@ platoncli government declareVersion -p D:\project\platoncli\test_params_file\gov
 
 - 参数说明
 
--p/--params:创建交易所需要的参数
-
--d/--address:钱包名或钱包地址
-
--c/--config:节点配置文件（非必填）
-
--o/--offline:是否生成待签名文件（离线交易，非必填）
-
--s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
+>-p/--params:创建交易所需要的参数
+>
+>-d/--address:钱包名或钱包地址
+>
+>-c/--config:节点配置文件（非必填）
+>
+>-o/--offline:是否生成待签名文件（离线交易，非必填）
+>
+>-s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
 
 - 参数文件（写入government.json）
 
@@ -885,15 +891,15 @@ platoncli government reportDoubleSign --address <walletName.json> --param xxxxxx
 
 - 参数说明
 
--p/--params:创建交易所需要的参数
-
--d/--address:钱包名或钱包地址
-
--c/--config:节点配置文件（非必填）
-
--o/--offline:是否生成待签名文件（离线交易，非必填）
-
--s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
+>-p/--params:创建交易所需要的参数
+>
+>-d/--address:钱包名或钱包地址
+>
+>-c/--config:节点配置文件（非必填）
+>
+>-o/--offline:是否生成待签名文件（离线交易，非必填）
+>
+>-s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
 
 ## 锁仓模块
 
@@ -902,20 +908,20 @@ platoncli government reportDoubleSign --address <walletName.json> --param xxxxxx
 - 命令
 
 ~~~
-platoncli hedge -p hedge.json -d xxx.json
+platoncli hedge -p hedge.json -d wallet.json
 ~~~
 
 - 参数说明
 
--p/--params:创建交易所需要的参数
-
--d/--address:钱包名或钱包地址
-
--c/--config:节点配置文件（非必填）
-
--o/--offline:是否生成待签名文件（离线交易，非必填）
-
--s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
+>-p/--params:创建交易所需要的参数
+>
+>-d/--address:钱包名或钱包地址
+>
+>-c/--config:节点配置文件（非必填）
+>
+>-o/--offline:是否生成待签名文件（离线交易，非必填）
+>
+>-s/--style:待签名信息存入csv文件还是二维码（默认存入csv文件，非必填）
 
 - 参数文件hedge.json
 
@@ -943,6 +949,6 @@ platoncli hedge GetRestrictingInfo -a xxxx
 
 - 参数说明
 
--c/--config:节点配置文件（非必填）
-
--a/--address:锁仓释放到账账户（必须为钱包地址）
+>-c/--config:节点配置文件（非必填）
+>
+>-a/--address:锁仓释放到账账户（必须为钱包地址）
