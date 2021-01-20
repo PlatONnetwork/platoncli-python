@@ -26,6 +26,7 @@ import click
 import urllib.request as urlrequest
 import psutil
 import qrcode
+from precompile_lib import Web3, HTTPProvider, Eth, Ppos, Admin, datatypes, Pip
 
 
 def HexBytes_to_str(tx):
@@ -60,11 +61,6 @@ def get_eth_obj(config, obj_type='platon'):
     hrp = node_conf_info["hrp"]
     rpcAddress = node_conf_info["rpcAddress"]
     chain_id = node_conf_info["chainId"]
-    if 'lat' == hrp or 'lax' == hrp:
-        from precompile_lib import Web3, HTTPProvider, Eth, Ppos, Admin, datatypes, Pip
-    else:
-        from precompile_lib import Alaya_Web3 as Web3, Alaya_HTTPProvider as HTTPProvider, Alaya_Eth as Eth, \
-            Alaya_Ppos as Ppos, Alaya_Admin as Admin, Alaya_datatypes as datatypes, Alaya_Pip as Pip
     if obj_type == 'platon':
         w3 = Web3(HTTPProvider(rpcAddress))
         obj = connect_node(w3, Eth)
@@ -1083,15 +1079,6 @@ def startup_node():
         time.sleep(1)
 
         pid = get_pid(PLATON_NAME, int(r['rpcport']))
-        chainId = 100
-        if 'atp' == hrp:
-            chainId = 201018
-        elif 'atx' == hrp:
-            chainId = 201030
-        elif 'lax' == hrp:
-            chainId = 101
-        else:
-            pass
         if pid:
             start_tail_time = int(get_time_stamp())
             end_tail_time = int(get_time_stamp())
@@ -1104,6 +1091,10 @@ def startup_node():
 
                     # time.sleep(1)
                     end_tail_time = int(get_time_stamp())
+            url = "http://{}:{}".format(r['rpcaddr'], r['rpcport'])
+            w3 = Web3(HTTPProvider(url))
+            admin = Admin(w3)
+            chainId = admin.nodeInfo.protocols.platon.config.chainId
             save_node_conf(r['rpcaddr'], r['rpcport'], r['hrp'], chainId)
             cust_print('Start platon successfully, pid:{}, rpc port:{}...'.format(pid, int(r['rpcport'])), fg='g')
         else:
@@ -1181,7 +1172,7 @@ def get_address_by_file_name(wallet_dir, file_name, net_type):
     return address, wallet_file_path
 
 
-def get_wallet_file_by_address(dir_name, address, net_type):
+def get_wallet_file_by_address(dir_name, address):
     """获取某一目录及其子目录下某一地址的冷钱包文件或者观察钱包
 
     Args:
@@ -1199,7 +1190,7 @@ def get_wallet_file_by_address(dir_name, address, net_type):
                 full_path = os.path.join(root, name)
                 with open(full_path, 'r') as load_f:
                     wallet_info = json.load(load_f)
-                    if wallet_info["address"][net_type] == address:
+                    if wallet_info["address"] == address:
                         return True, full_path, name
 
     return False, None, None

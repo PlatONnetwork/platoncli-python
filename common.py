@@ -2,6 +2,7 @@ import sys
 import os
 from utility import cust_print, get_dir_by_name, g_system, get_wallet_file_by_address, input_passwd_for_linux, \
     input_passwd_for_win, get_private_key_from_wallet_file, g_dict_dir_config, read_json_file
+from precompile_lib import Account, keys
 
 
 def verify_password(address, wallet_dir, passwd=None):
@@ -23,10 +24,7 @@ def verify_password(address, wallet_dir, passwd=None):
     else:
         # 根据地址找钱包
         hrp = address[:3]
-        net_type = "mainnet"
-        if hrp == 'lax' or hrp == 'atx':
-            net_type = 'testnet'
-        find, wallet_file_path, fileName = get_wallet_file_by_address(wallet_dir, address, net_type)
+        find, wallet_file_path, fileName = get_wallet_file_by_address(wallet_dir, address)
         if not find:
             cust_print('The wallet file of {} could not be found on {}'.format(fileName, wallet_dir),fg='r')
             sys.exit(1)
@@ -38,10 +36,6 @@ def verify_password(address, wallet_dir, passwd=None):
             passwd = b''.join(input_passwd_for_win()).decode()
         else:
             passwd = input_passwd_for_linux()
-    if 'lat' == hrp or 'lax' == hrp:
-        from precompile_lib import Account, keys
-    else:
-        from precompile_lib import Alaya_Account as Account, Alaya_keys as keys
     privateKey = get_private_key_from_wallet_file(Account, keys, wallet_file_path, passwd)
     return wallet_file_path, privateKey, hrp, Account
 
@@ -72,7 +66,7 @@ def un_sign_data(data, params, ppos, private_key):
     transaction_dict = {}
     transaction_cfg = params['transaction_cfg']
     to_type = '{}Address'.format(params['to_type'])
-    to_address = getattr(ppos.web3, to_type)
+    to_address = getattr(ppos, to_type)
     if transaction_cfg is None:
         transaction_cfg = {}
     if transaction_cfg.get("gasPrice", None) is None:
@@ -97,15 +91,6 @@ def un_sign_data(data, params, ppos, private_key):
     if transaction_cfg.get("value", 0) > 0:
         transaction_dict["value"] = int(transaction_cfg.get("value", 0))
     return transaction_dict
-
-
-def bech32_address_bytes(hrp):
-    if hrp in ['atp', 'atx']:
-        from alaya.packages.platon_account.internal.transactions import bech32_address_bytes
-        return bech32_address_bytes
-    if hrp in ['lat', 'lax']:
-        from alaya.packages.platon_account.internal.transactions import bech32_address_bytes
-        return bech32_address_bytes
 
 
 def check_dir_exits(dir_str):

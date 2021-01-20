@@ -5,7 +5,7 @@ import rlp
 from hexbytes import HexBytes
 from utility import get_command_usage, get_eth_obj, cust_print, g_dict_dir_config, read_json_file, write_QRCode, \
     write_csv, get_time_stamp
-from common import verify_password, un_sign_data, bech32_address_bytes, check_dir_exits
+from common import verify_password, un_sign_data, check_dir_exits
 from client_sdk_python.packages.platon_account.internal.transactions import bech32_address_bytes
 
 
@@ -94,8 +94,8 @@ def update(file, address, template, config, offline, style):
                 write_QRCode(transaction_dict, unsigned_file_path)
             cust_print('unsigned_file save to:{}'.format(unsigned_file_path), fg='g')
         else:
-            tx_hash = ppos.editCandidate(*_params.values())
-            cust_print('updateStaking send transfer transaction successful, tx hash:{}.'.format(tx_hash), fg='g')
+            tx_result = ppos.editCandidate(*_params.values())
+            cust_print('updateStaking send transfer transaction successful, tx result:{}.'.format(tx_result), fg='g')
     except ValueError as e:
         cust_print('updateStaking send transfer transaction fail,error info:{}'.format(e))
         sys.exit(1)

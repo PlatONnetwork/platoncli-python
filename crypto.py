@@ -20,7 +20,7 @@ from two1.crypto.ecdsa_base import Point
 from two1.crypto.ecdsa import ECPointAffine
 from two1.crypto.ecdsa import secp256k1
 
-from alaya.packages.eth_utils import (
+from client_sdk_python.packages.eth_utils import (
     text_if_str,
     to_bytes
 )
@@ -179,26 +179,26 @@ class PrivateKeyBase(object):
         pri = keys.PrivateKey(key_bytes)
         return pri.to_hex()
 
-    def to_keyfile_json(self, password):
+    def to_keyfile_json(self, password,hrp):
         key_bytes = bytes(self)
 
         password_bytes = text_if_str(to_bytes, password)
         assert len(key_bytes) == 32
 
         # return create_keyfile_json(key_bytes, password_bytes, kdf='scrypt')
-        return self.generate_keyfile_json(password_bytes, key_bytes)
+        return self.generate_keyfile_json(password_bytes, key_bytes,hrp)
 
     # 生成钱包内容
-    def generate_keyfile_json(self, password_bytes, key_bytes):
+    def generate_keyfile_json(self, password_bytes, key_bytes, hrp):
         from Crypto import Random
-        from alaya.packages.platon_keyfile.keyfile import _scrypt_hash, encode_hex_no_prefix, encrypt_aes_ctr
-        from alaya.packages.eth_utils import (
+        from client_sdk_python.packages.platon_keyfile.keyfile import _scrypt_hash, encode_hex_no_prefix, encrypt_aes_ctr
+        from client_sdk_python.packages.eth_utils import (
             big_endian_to_int,
             int_to_big_endian,
             keccak,
             remove_0x_prefix,
         )
-        from alaya.packages.platon_keys import keys
+        from client_sdk_python.packages.platon_keys import keys
 
         # scrypt加密算法
         DKLEN = 32
@@ -230,13 +230,8 @@ class PrivateKeyBase(object):
 
         pub = keys.PrivateKey(key_bytes).public_key
 
-        address = pub.to_bech32_address()
-        test_address = pub.to_bech32_test_address()
         return {
-            'address': {
-                "mainnet": remove_0x_prefix(address),
-                "testnet": remove_0x_prefix(test_address),
-            },
+            'address': pub.to_bech32_address(hrp),
             'crypto': {
                 'cipher': 'aes-128-ctr',
                 'cipherparams': {
