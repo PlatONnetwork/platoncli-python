@@ -166,7 +166,7 @@ def ip_in_china():
 
 
 # cli版本
-CLI_VERSION = '0.2.0'
+CLI_VERSION = '0.2.1'
 CLI_NAME = 'platoncli'
 PLATON_NAME = 'platon'
 if "windows" == g_system:
