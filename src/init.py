@@ -1,24 +1,19 @@
 # _*_ coding:utf-8 _*_
-import os
-
 import click
 
 from precompile_lib import Web3, HTTPProvider, Eth, Admin
-from utility import get_command_usage, cust_print, init_node, g_current_dir, \
-    download_genesis_file, download_url_config_file, save_node_conf
+from utility import get_command_usage, cust_print, init_node, download_genesis_file, download_url_config_file, save_node_conf
 
 
 @click.option('-w', '--withnode', is_flag=True, default=False, help='Whether to initialize the node？')
 @click.option('-p', '--private_chain', is_flag=True, default=False, help='是否是搭建私链？(默认：否).')
-@click.option('-h', '--hrp', 'hrp', required=True, default='lat',
-              type=click.Choice(['atp', 'atx', 'lat', 'lax']),
-              help='Address prefix, \'atp/atx\' Are the main network and test network addresses of Alaya network '
-                   'respectively; '
-                   '\'lat/lax\' Are the primary and test network addresses of PlatON network respectively.')
+@click.option('-h', '--hrp', required=True, default='lat', help='this is params is net type')
 @click.option('-c', '--config', default="", help="genesis block config.")
+@click.option('-cid', '--chain_id', default="", help="This parameter must be added when the node is not initialized or "
+                                                    "needs to be added to the network")
 @click.command(help="Initialize the PlatON CLI tool.", cls=get_command_usage("init", False))
-def init(withnode, private_chain, hrp, config):
-
+def init(withnode, private_chain, hrp, config, chain_id):
+    chainId = chain_id
     if withnode:
         # install_node(hrp)
         init_node(hrp, private_chain, config)
@@ -28,15 +23,6 @@ def init(withnode, private_chain, hrp, config):
 
         ip = ""
         rpc_port = ""
-        chainId = 100
-        if 'atp' == hrp:
-            chainId = 201018
-        elif 'atx' == hrp:
-            chainId = 201030
-        elif 'lax' == hrp:
-            chainId = 101
-        else:
-            pass
         # Whether to join the network
         confirm = input('Whether to join the network? [Y|y/N|n]: ')
         if confirm == 'Y' or confirm == 'y':

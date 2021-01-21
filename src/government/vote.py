@@ -66,8 +66,8 @@ def vote(param, address, offline, config, style):
             _params['version_sign'] = version_sign
             _params['pri_key'] = private_key[2:]
             _params['transaction_cfg'] = params.get('transaction_cfg', None)
-            txhash = pip.vote(*_params.values())
-            cust_print('send raw transfer transaction successful, tx hash:{}.'.format(txhash), fg='g')
+            tx_result = pip.vote(*_params.values())
+            cust_print('send raw transfer transaction successful, tx result:{}.'.format(tx_result), fg='g')
     except Exception as e:
         cust_print('vote send transfer transaction fail,error info:{}'.format(e), fg='r')
         sys.exit(1)

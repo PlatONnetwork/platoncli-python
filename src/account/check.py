@@ -41,7 +41,7 @@ def check(address, test_net):
             cust_print("Wrong address parameter: --address {}".format(address), fg='r')
             sys.exit(1)
         else:
-            find, _, fileName = get_wallet_file_by_address(wallet_dir, address, net_type)
+            find, _, fileName = get_wallet_file_by_address(wallet_dir, address)
             if not find:
                 cust_print('The wallet file of {} could not be found on {}'.format(fileName, wallet_dir),fg='r')
                 sys.exit(1)

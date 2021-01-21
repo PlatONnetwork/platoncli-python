@@ -3,6 +3,7 @@ import sys
 import os
 import json
 from utility import get_command_usage, cust_print, g_dict_dir_config, connect_node
+from precompile_lib import Web3, HTTPProvider, Eth
 
 
 @click.command(cls=get_command_usage("account"))
@@ -29,13 +30,6 @@ def balance(address, config):
             rpcAddress = json.load(f)['rpcAddress']
     except:
         cust_print('{} data is incorrect format!!!'.format(config))
-        sys.exit(1)
-    if 'lat' == hrp or 'lax' == hrp:
-        from precompile_lib import Web3, HTTPProvider, Eth
-    elif 'atp' == hrp or 'atx' == hrp:
-        from precompile_lib import Alaya_Web3 as Web3, Alaya_HTTPProvider as HTTPProvider, Alaya_Eth as Eth
-    else:
-        cust_print('the {} is not alaya or platon,please check!!!'.format(address), fg='r')
         sys.exit(1)
     try:
         w3 = Web3(HTTPProvider(rpcAddress))

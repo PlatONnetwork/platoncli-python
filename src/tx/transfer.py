@@ -8,6 +8,7 @@ from utility import get_command_usage, g_dict_dir_config, cust_print, get_addres
     get_wallet_file_by_address, get_time_stamp, write_csv, g_system, input_passwd_for_win, input_passwd_for_linux, \
     get_private_key_from_wallet_file, sign_one_transaction_by_prikey, send_transaction, connect_node,write_QRCode
 from bech32_addr import decode
+from precompile_lib import Web3, HTTPProvider, Eth, Account, keys
 
 
 def show_params():
@@ -92,11 +93,6 @@ def transfer(param, address, offline, template, config, style):
         chainId = node_conf_info["chainId"]
         rpcAddress = node_conf_info["rpcAddress"]
 
-    if 'lat' == hrp or 'lax' == hrp:
-        from precompile_lib import Web3, HTTPProvider, Eth
-    else:
-        from precompile_lib import Alaya_Web3 as Web3, Alaya_HTTPProvider as HTTPProvider, Alaya_Eth as Eth
-
     w3 = Web3(HTTPProvider(rpcAddress))
     platon = connect_node(w3, Eth)
 
@@ -125,7 +121,7 @@ def transfer(param, address, offline, template, config, style):
     else:
         # 在线直接发送交易,需要钱包文件
         if not offline:
-            find, wallet_file_path, fileName = get_wallet_file_by_address(wallet_dir, address, net_type)
+            find, wallet_file_path, fileName = get_wallet_file_by_address(wallet_dir, address)
             if not find:
                 cust_print('hrp:{}, The wallet file of address:{} could not be found on {}'.
                            format(hrp, address, wallet_dir), fg='r')
@@ -192,10 +188,6 @@ def transfer(param, address, offline, template, config, style):
             else:
                 passwd = input_passwd_for_linux(prompt_message)
 
-            if 'lat' == hrp or 'lax' == hrp:
-                from precompile_lib import Account, keys
-            else:
-                from precompile_lib import Alaya_Account as Account, Alaya_keys as keys
             # 获取私钥
             privateKey = get_private_key_from_wallet_file(Account, keys, wallet_file_path, passwd)
             # 签名交易

@@ -4,7 +4,8 @@ import rlp
 import sys
 from utility import get_command_usage, cust_print, read_json_file, g_dict_dir_config, get_eth_obj, write_csv, \
     write_QRCode, get_time_stamp
-from common import verify_password, un_sign_data, bech32_address_bytes, check_dir_exits
+from common import verify_password, un_sign_data, check_dir_exits
+from client_sdk_python.packages.platon_account.internal.transactions import bech32_address_bytes
 
 
 @click.command(cls=get_command_usage("hedge"))
@@ -60,8 +61,8 @@ def createRestrictingPlan(param, address, offline, config, style):
         else:
             _params['pri_key'] = private_key[2:]
             _params['transaction_cfg'] = params.get('transaction_cfg', None)
-            txhash = ppos.createRestrictingPlan(*_params.values())
-            cust_print('send raw transfer transaction successful, tx hash:{}.'.format(txhash), fg='g')
+            tx_result = ppos.createRestrictingPlan(*_params.values())
+            cust_print('send raw transfer transaction successful, tx result:{}.'.format(tx_result), fg='g')
     except Exception as e:
         cust_print('createRestrictingPlan send transfer transaction fail,error info:{}'.format(e), fg='r')
         sys.exit(1)

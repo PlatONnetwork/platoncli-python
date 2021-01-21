@@ -79,8 +79,8 @@ def unDelegate(param, address, offline, template, config, style):
                 write_QRCode(transaction_dict, unsigned_file_path)
             cust_print('unsigned_file save to:{}'.format(unsigned_file_path), fg='g')
         else:
-            tx_hash = ppos.withdrewDelegate(*_params.values())
-            cust_print('delegate unDelegate send transfer transaction successful, tx hash:{}.'.format(tx_hash), fg='g')
+            tx_result = ppos.withdrewDelegate(*_params.values())
+            cust_print('delegate unDelegate send transfer transaction successful, tx result:{}.'.format(tx_result), fg='g')
     except ValueError as e:
         cust_print('delegate unDelegate send transfer transaction fail,error info:{}'.format(e), fg='r')
         sys.exit(1)

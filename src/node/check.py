@@ -6,15 +6,9 @@ import click
 
 from utility import get_command_usage, get_platon_version, cust_print, get_local_platon_cfg, \
     g_current_dir, g_dict_dir_config
-from precompile_lib import Web3, HTTPProvider, Eth
+from precompile_lib import Web3, HTTPProvider, Eth, tobech32address
 
-# 治理地址
-dict_gov_contractAddr = {
-    "lat": "lat1zqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq93t3hkm",
-    "lax": "lax1zqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq97wrcc5",
-    "atp": "atp1zqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq9ga80f5",
-    "atx": "atx1zqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq9zmm967"
-}
+GOVERNACE_BASE_ADDRESS = '0x1000000000000000000000000000000000000005'
 
 
 def platon_call(url, to_addr="atp1zqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq9ga80f5", data="0xc483820837"):
@@ -71,7 +65,7 @@ def check():
     cust_print("get hrp:{} from platon_cfg file: {}".format(hrp, platon_cfg_path), fg='g')
     # get platon version on chain
     try:
-        ret = platon_call(url, dict_gov_contractAddr[hrp])
+        ret = platon_call(url, tobech32address(hrp, GOVERNACE_BASE_ADDRESS))
         platon_version = ret["Ret"]
         cust_print("platon version on chain: {}".format(formatVersion(platon_version)), fg='g')
 

@@ -94,11 +94,13 @@ platoncli init -h [lat/lax/atp/atx]
 
 > -h:  地址格式类型，包括：lat/lax/atp/atx，默认lat，分别对应初始的chainid为：100/101/201018/201030；
 >
-> --private_chain/--no-private_chain：是否是搭建私链，默认为否；
+> --private_chain/-p：是否是搭建私链，默认为否；
 >
 > --withnode/-w:是否初始化节点，默认不初始化
 >
 > --config/-c：指定创世区块的文件（如果不指定，则远端下载）
+>
+> --chain_id/-cid:非必填（当没有添加-p参数或者未加入网络时必须添加该参数）
 >
 > 如果是连接节点，生成的节点配置文件：node_config.json，格式如下：
 >
@@ -128,7 +130,7 @@ platoncli node init -h [lat/lax/atp/atx]
 
 > -h:  地址格式类型，包括：lat/lax/atp/atx，默认lat；
 >
-> --private_chain/--no-private_chain：是否是搭建私链，默认为否；
+> --private_chain/-p：是否是搭建私链，默认为否；
 >
 > --config/-c：指定创世区块的文件（如果不指定，则远端下载）
 >

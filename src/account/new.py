@@ -32,7 +32,7 @@ def batch_generate_wallet(password="", wallet_count=1,
 
             publicKeys[public_address] = private_key.public_key._key.get_public_key()
 
-            keystores[public_address] = json.dumps(private_key._key.to_keyfile_json(password))
+            keystores[public_address] = json.dumps(private_key._key.to_keyfile_json(password,hrp_type))
             privateKeys[public_address] = private_key._key.get_private_key()
 
     return address_list, publicKeys, keystores
@@ -41,11 +41,7 @@ def batch_generate_wallet(password="", wallet_count=1,
 @click.command(cls=get_command_usage("account"))
 @click.option('-n', '--name', 'wallet_name', default="", help='Wallet file name.')
 @click.option('-b', '--batch', type=int, default=1, help='Batch generated wallet number.')
-@click.option('-h', '--hrp', 'hrp', required=True, default='lat',
-              type=click.Choice(['atp', 'atx', 'lat', 'lax']),
-              help='Address prefix, \'atp/atx\' Are the main network and test network addresses of Alaya network '
-                   'respectively; '
-                   '\'lat/lax\' Are the primary and test network addresses of PlatON network respectively.')
+@click.option('-h', '--hrp', required=True, default='lat', help='this is params is net type')
 def new(wallet_name, batch, hrp):
     """
     this is account submodule new command.

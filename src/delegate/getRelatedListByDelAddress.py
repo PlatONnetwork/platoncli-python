@@ -20,8 +20,11 @@ def getRelatedListByDelAddress(address, config, fromaddress):
         ppos = get_eth_obj(config, 'ppos')
         fromaddress = None if fromaddress.replace(" ", "") == "" else fromaddress
         result = ppos.getRelatedListByDelAddr(address, fromaddress)
-        for obj in result['Ret']:
-            cust_print('{}'.format(json.dumps(obj, indent=2)), fg='g')
+        if 'not found' in result['Ret']:
+            cust_print('{}'.format(result['Ret']), fg='g')
+        else:
+            for obj in result['Ret']:
+                cust_print('{}'.format(obj), fg='g')
     except Exception as e:
         cust_print('Query exception,{}'.format(e), fg='r')
         sys.exit(1)

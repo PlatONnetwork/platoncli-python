@@ -43,8 +43,8 @@ def withdrawDelegateReward(address, offline, config, style):
                 unsigned_file_path = unsigned_file_path.replace('csv', 'jpg')
                 write_QRCode(transaction_dict, unsigned_file_path)
         else:
-            tx_hash = ppos.withdrawDelegateReward(*_params.values())
-            cust_print('delegate withdrawDelegateReward send transfer transaction successful, tx hash:{}.'.format(tx_hash),fg='g')
+            tx_result = ppos.withdrawDelegateReward(*_params.values())
+            cust_print('delegate withdrawDelegateReward send transfer transaction successful, tx result:{}.'.format(tx_result),fg='g')
     except ValueError as e:
         cust_print('delegate withdrawDelegateReward send transfer transaction fail,error info:{}'.format(e), fg='r')
         sys.exit(1)

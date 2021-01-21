@@ -17,9 +17,9 @@ def changePassword(address):
 
     wallet_file_path, private_key, hrp, _ = verify_password(address, wallet_dir)  # verify old password
     new_password = confirm_password()  # confirm new password
-
+    print('private_key:{}'.format(private_key))
     private_key_obj = crypto.PrivateKey.from_hex(private_key[2:])
-    keystores = private_key_obj.to_keyfile_json(new_password)
+    keystores = private_key_obj.to_keyfile_json(new_password, hrp)
     public_key = private_key_obj.public_key.to_hex()
     public_address = private_key_obj.public_key.address(hrp)
 
