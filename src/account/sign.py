@@ -3,8 +3,7 @@ import os
 import sys
 import ast
 import click
-from utility import g_dict_dir_config, cust_print, get_command_usage, sign_one_transaction_by_prikey, get_time_stamp, \
-    read_QRCode
+from utility import g_dict_dir_config, cust_print, get_command_usage, sign_one_transaction_by_prikey, get_time_stamp
 from common import verify_password, check_dir_exits
 
 
@@ -30,10 +29,8 @@ def read_file(data_file):
                 if v.get('data', None):
                     v['data'] = ast.literal_eval(v['data'])
                 result.append(dict(v))
-    elif suffix == '.jpg':
-        result = read_QRCode(abspath)
     else:
-        cust_print('{} illegal,please check!'.format(data_file), fg='r')
+        cust_print('{} illegal,please check!suffix is:{}'.format(data_file, suffix), fg='r')
         sys.exit(1)
     if len(result) == 0:
         cust_print('{} class content is empty,please check!'.format(data_file), fg='r')

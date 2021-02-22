@@ -18,8 +18,8 @@ from hexbytes import HexBytes
 import platform
 import subprocess
 from configparser import ConfigParser
-from PIL import Image
-from pyzbar import pyzbar
+# from PIL import Image
+# from pyzbar import pyzbar
 from string import Template
 from logger import writeLog, setLogLevel
 import click
@@ -105,12 +105,13 @@ def write_QRCode(data, save_path):
     img.save(save_path)
 
 
+"""
 def read_QRCode(abspath):
-    """
+
     二维码识别
     :param abspath:
     :return:
-    """
+
     import ast
     img = Image.open(abspath)
     barcodes = pyzbar.decode(img)
@@ -119,6 +120,7 @@ def read_QRCode(abspath):
         barcodeData = barcode.data.decode("utf-8")
         data = [dict(da) for da in ast.literal_eval(barcodeData)]
     return data
+"""
 
 
 def get_current_dir():
@@ -166,7 +168,7 @@ def ip_in_china():
 
 
 # cli版本
-CLI_VERSION = '0.2.1'
+CLI_VERSION = '0.2.2'
 CLI_NAME = 'platoncli'
 PLATON_NAME = 'platon'
 if "windows" == g_system:
