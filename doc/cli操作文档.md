@@ -1,5 +1,50 @@
 # cli操作文档
 
+## 下载
+
+>1.打开https://github.com/PlatONnetwork/platoncli-python/releases。
+>
+>2.选择你要下载的版本，window点击platoncli.exe，Linux点击platoncli.tar.gz既可下载。
+>
+>Linux也可用wget下载
+>
+>~~~
+>wget https://github.com/PlatONnetwork/platoncli-python/releases/download/0.2.2/platoncli.tar.gz
+>~~~
+>
+>
+
+## 安装
+
+>1.window安装，只需要双击platoncli.exe，按照引导一步一步的操作即可。
+>
+>2.Linux安装步骤
+>
+>- 首先解压
+>
+>  ~~~
+>  tar zvxf platoncli.tar.gz
+>  ~~~
+>
+>  
+>
+>- 解压后有一个名为install_cli_for_linux.sh的文件，对它进行如下操作。
+>
+>  ~~~
+>  chmod +x install_cli_for_linux.sh
+>  ./install_cli_for_linux.sh
+>  ~~~
+>
+>- 退出终端重新登陆，新建test目录，进入test目录。
+>
+>  运行如下命令成功，既代表安装成功
+>
+>  ~~~
+>  platoncli --help
+>  ~~~
+>
+>  
+
 ## 基本操作
 
 **注意：命令行中除了钱包文件可以直接填写文件名，参数文件都必须指定为文件的绝对路径**
