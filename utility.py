@@ -556,7 +556,26 @@ def download_binary_tar(network_type="PlatON"):
     unpack_dir = g_dict_dir_config["platon_dir"]
     with tarfile.open(tar_path, mode='r:*') as tar:
         # tar.extractall(g_current_dir)
-        tar.extractall(unpack_dir)
+        def is_within_directory(directory, target):
+            
+            abs_directory = os.path.abspath(directory)
+            abs_target = os.path.abspath(target)
+        
+            prefix = os.path.commonprefix([abs_directory, abs_target])
+            
+            return prefix == abs_directory
+        
+        def safe_extract(tar, path=".", members=None, *, numeric_owner=False):
+        
+            for member in tar.getmembers():
+                member_path = os.path.join(path, member.name)
+                if not is_within_directory(path, member_path):
+                    raise Exception("Attempted Path Traversal in Tar File")
+        
+            tar.extractall(path, members, numeric_owner=numeric_owner) 
+            
+        
+        safe_extract(tar, unpack_dir)
         for x in [PLATON_NAME, KEY_TOOL_NAME]:
             # src_path = os.path.join(unpack_dir, x)
             des_path = os.path.join(unpack_dir, x)
